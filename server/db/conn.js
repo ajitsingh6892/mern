@@ -1,26 +1,16 @@
-const { MongoClient } = require("mongodb");
-const Db = process.env.ATLAS_URI;
-const client = new MongoClient(Db, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+require ('dotenv').config()
 
-var _db;
+const mongoose = require('mongoose')
 
-module.exports = {
-  connectToServer: function (callback) {
-    client.connect(function (err, db) {
-      // Verify we got a good "db" object
-      if (db)
-      {
-        _db = db.db("employees");
-        console.log("Successfully connected to Database."); 
-      }
-      return callback(err);
-         });
-  },
+const url = process.env.ATLAS_URI
 
-  getDb: function () {
-    return _db;
-  },
-};
+const startConnection = async () =>{
+    try {
+        await mongoose.connect(url,{useNewUrlParser:true, useUnifiedTopology:true, useCreateIndex:true, useFindAndModify:false} )
+        console.log("successfully connected to mongoDB ")
+    } catch (error) {
+        console.error(error)
+        process.exit(1)
+    }
+}
+module.exports = startConnection
